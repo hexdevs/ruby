@@ -1,0 +1,5 @@
+prelude: |
+  obj = Object.new
+benchmark:
+  kernel_itself: obj.itself == obj
+loop_count: 20000000
