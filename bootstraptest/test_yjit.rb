@@ -2220,9 +2220,9 @@ assert_equal '[true]', %q{
 }
 
 # test enabling c_call tracing before compiling
-assert_equal '[[:c_call, :itself]]', %q{
+assert_include '[:c_call, :initialize_clone]', %q{
   def shouldnt_compile
-    itself
+    clone
   end
 
   events = []
@@ -2235,9 +2235,9 @@ assert_equal '[[:c_call, :itself]]', %q{
 }
 
 # test enabling c_return tracing before compiling
-assert_equal '[[:c_return, :itself, main]]', %q{
+assert_include '[:c_return, :initialize_clone, main]', %q{
   def shouldnt_compile
-    itself
+    clone
   end
 
   events = []
@@ -2268,9 +2268,9 @@ assert_equal '[[:return, 42]]', %q{
 }
 
 # test compiling on non-tracing ractor then running on a tracing one
-assert_equal '[:itself]', %q{
+assert_equal '[:nil?]', %q{
   def traced_method
-    itself
+    nil?
   end
 
   tracing_ractor = Ractor.new do
