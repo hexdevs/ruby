@@ -1857,22 +1857,25 @@ CODE
     assert_equal [[:c_return, :singleton_class, :alias_singleton_class]], events
     events.clear
 
-    c = Class.new{
-      alias initialize itself
+    o = Class.new{
+      def m
+        itself
+      end
+      alias alias_m m
+    }.new
+    TracePoint.new(:return, &capture_events).enable{
+      o.alias_m
     }
-    TracePoint.new(:c_call, &capture_events).enable{
-      c.new
-    }
-    assert_equal [:c_call, :itself, :initialize], events[1]
+    assert_equal [[:return, :itself, :itself], [:return, :m, :alias_m]], events
     events.clear
 
     o = Class.new{
       alias alias_itself itself
     }.new
-    TracePoint.new(:c_call, :c_return, &capture_events).enable{
+    TracePoint.new(:call, :return, &capture_events).enable{
       o.alias_itself
     }
-    assert_equal [[:c_call, :itself, :alias_itself], [:c_return, :itself, :alias_itself]], events
+    assert_equal [[:call, :itself, :alias_itself], [:return, :itself, :alias_itself]], events
     events.clear
   end
 
