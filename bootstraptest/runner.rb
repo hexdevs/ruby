@@ -516,6 +516,19 @@ def assert_equal(expected, testsrc, message = '', opt = '', **argh)
   end
 end
 
+def assert_include(expected, testsrc, message = '')
+  add_assertion testsrc, -> as do
+    as.assert_check(message) {|result|
+      if result.include? expected
+        nil
+      else
+        desc = "#{result.inspect} (expected to include #{expected.inspect})"
+        pretty(testsrc, desc, result)
+      end
+    }
+  end
+end
+
 def assert_match(expected_pattern, testsrc, message = '')
   add_assertion testsrc, -> as do
     as.assert_check(message) {|result|
